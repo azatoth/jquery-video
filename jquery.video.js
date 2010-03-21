@@ -176,7 +176,7 @@ $.widget("ui.video", {
 					'class': 'ui-widget ui-widget-content ui-corner-all ui-video-control'
 				}
 			)
-			.appendTo(this.wrapperElement)
+			.prependTo(this.wrapperElement)
 			.position({
 					'my': 'bottom',
 					'at': 'bottom',
