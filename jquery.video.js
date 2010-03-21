@@ -154,7 +154,7 @@ $.widget("ui.video", {
 					if( self["_event_" + this] ) {
 						self.videoElement.bind( this + ".video", $.proxy(self["_event_" + this],self) );
 					} else {
-						//console.log( "event %s missing/not implemented", this);
+						//self.videoElement.bind( this + ".video", $.proxy(function(){console.log("event %s", this, arguments)},this) );
 					}
 				}
 			);

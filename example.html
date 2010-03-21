@@ -1,6 +1,8 @@
+<?xml version="1.1" charset="UTF-8"?>
 <!DOCTYPE html>
-<html>
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <script src="http://js.azatoth.net/libs/jquery/1.4.2/jquery.js"></script>
 <script src="http://js.azatoth.net/libs/jquery-ui/1.8rc3/ui/jquery-ui.js"></script>
 <script src="jquery.video.js"></script>
@@ -9,17 +11,26 @@
 <title>jQuery UI Video test</title>
 <style>
 	#foo {
-		width: 640px;
-		height: 320px;
+		width: 854px;
+		height: 480px;
 	}
 </style>
+<script type="text/javascript"
+  src="http://jqueryui.com/themeroller/themeswitchertool/">
+</script>
 <script>
 	$(function(){
     $('#switcher').themeswitcher();
 		$('#foo').video({
+			poster: 'http://stream.azatoth.net/big_buck_bunny.png',
 			sources: [
-			{'title': 'http://stream.azatoth.net/Big_Buck_Bunny_1080p_surround_FrostWire.com.avi', 'type': 'video/mp4'}
-			]
+			{'title': 'http://stream.azatoth.net/big_buck_bunny_480p_surround-fix.avi', 'type': 'video/mp4'},
+			{'title': 'http://stream.azatoth.net/big_buck_bunny_480p_h264.mov', 'type': 'video/h264'},
+			{'title': 'http://stream.azatoth.net/big_buck_bunny_480p_stereo.ogg', 'type': 'video/ogg'},
+			{'title': 'http://stream.azatoth.net/big_buck_bunny_720p_surround.avi', 'type': 'video/mp4'},
+			{'title': 'http://stream.azatoth.net/big_buck_bunny_720p_h264.mov', 'type': 'video/h264'},
+			{'title': 'http://stream.azatoth.net/big_buck_bunny_720p_stereo.ogg', 'type': 'video/ogg'}
+		]
 		}
 		);
 
@@ -32,9 +43,6 @@
 <body>
 	<div id="foo"></div>
 	<div>© copyright Blender Foundation | www.bigbuckbunny.org</div>
-<script type="text/javascript"
-  src="http://jqueryui.com/themeroller/themeswitchertool/">
-</script>
 <div id="switcher"></div>
 
 </body>
