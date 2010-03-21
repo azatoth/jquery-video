@@ -1,0 +1,69 @@
+.video-control {
+	width: 320px;
+	height: 40px;
+/*	background: #787878;*/
+	position: relative;
+	opacity: .8;
+}
+.video-progress {
+	font-family: monospace;
+	position: absolute;
+	right: 10px;
+	top: 5px;
+	font-size: 10px;
+}
+
+.video-mute {
+	position: absolute;
+	left: 10px;
+	top: 5px;
+}
+
+.video-play {
+	position: absolute;
+	left: 150px;
+	top: 5px;
+}
+.video-seek-prev {
+	position: absolute;
+	left: 130px;
+	top: 5px;
+}
+.video-seek-next {
+	position: absolute;
+	left: 170px;
+	top: 5px;
+}
+.video-volume-slider {
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	width: 60px;
+}
+.video-scrubber-slider {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	width: 200px;
+}
+
+.video-scrubber-slider, .video-volume-slider {
+	height: .3em;
+}
+.video-scrubber-slider .ui-slider-handle, .video-volume-slider .ui-slider-handle {
+	width: .6em;
+	height: .4em;
+	top: -.1em;
+	margin-left: -.3em;
+}
+
+.video-buffer-status {
+	position: absolute;
+	width: 0;
+	top: 0;
+	bottom: 0;
+	padding: 0;
+	margin: 0;
+	opacity: .2;
+	background: #000;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://js.azatoth.net/libs/jquery/1.4.2/jquery.js"></script>
+<script src="http://js.azatoth.net/libs/jquery-ui/1.8rc3/ui/jquery-ui.js"></script>
+<script src="jquery.video.js"></script>
+<link rel="stylesheet" href="http://js.azatoth.net/libs/jquery-ui/1.8rc3/themes/base/jquery-ui.css" />
+<link rel="stylesheet" href="jquery.video.css" />
+<title>jQuery UI Video test</title>
+<style>
+	#foo {
+		width: 640px;
+		height: 320px;
+	}
+</style>
+<script>
+	$(function(){
+    $('#switcher').themeswitcher();
+		$('#foo').video({
+			sources: [
+			{'title': 'http://stream.azatoth.net/video.ogv', 'type': 'video/ogg'},
+			{'title': 'http://stream.azatoth.net/video.mp4', 'type': 'video/mp4'}
+			]
+		}
+		);
+
+
+
+	});
+</script>
+
+</head>
+<body>
+	<div id="foo"></div>
+<script type="text/javascript"
+  src="http://jqueryui.com/themeroller/themeswitchertool/">
+</script>
+<div id="switcher"></div>
+
+</body>
+</html>
