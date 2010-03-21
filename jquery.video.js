@@ -97,6 +97,7 @@ $.widget("ui.video", {
 
 		_create: function() {
 			var self = this;
+			this.wasPureVideoElement = false;
 
 			var videoOptions = {
 				width: self.options.width || Math.max( self.element.outerWidth() , self.options.minWidth ),
@@ -110,9 +111,20 @@ $.widget("ui.video", {
 			};
 
 			if( self.element.is('video') ) {
+				self.oldVideoOpts = {};
+				self.wasPureVideoElement = true;
 				self.videoElement = self.element;
+				$.each( videoOptions , function( key, value) {
+						if( key != 'html' && value !== null ) {
+							self.oldVideoOpts[key] = self.videoElement.attr( key );
+							self.videoElement.attr( key, value );
+						}
+					}
+				);
 				self.element.wrapAll( '<div />' );
 				self.element = self.element.parent();
+				self.element.addClass(self.videoElement.attr('class'));
+				self.element.attr('style',self.videoElement.attr('style'));
 			} else {
 				self.videoElement = $('<video/>', videoOptions).appendTo( self.element );
 			}
@@ -400,10 +412,20 @@ $.widget("ui.video", {
 
 		// The destroyer
 		destroy: function() {
-			$.Widget.prototype.destroy.apply(this, arguments); // default destroy
-			// now do other stuff particular to this widget
-			this.videoElement.remove();
-			this.controls.remove();
+			var self = this;
+			if( self.wasPureVideoElement ) {
+				self.videoElement.unwrap();
+				$.each( self.oldVideoOpts , function( key, value) {
+						self.videoElement.attr( key, value );
+					}
+				);
+				
+				$.Widget.prototype.destroy.apply(self, arguments); // default destroy
+			} else {
+				$.Widget.prototype.destroy.apply(self, arguments); // default destroy
+				self.videoElement.remove();
+			}
+			self.controls.remove();
 		}
 	});
 
