@@ -1,10 +1,10 @@
-.video-control {
+.ui-video-control {
 	width: 320px;
 	height: 40px;
 	position: absolute;
 	opacity: .8;
 }
-.video-progress {
+.ui-video-progress {
 	font-family: monospace;
 	position: absolute;
 	right: 10px;
@@ -12,51 +12,51 @@
 	font-size: 10px;
 }
 
-.video-mute {
+.ui-video-mute {
 	position: absolute;
 	left: 10px;
 	top: 5px;
 }
 
-.video-play {
+.ui-video-play {
 	position: absolute;
 	left: 150px;
 	top: 5px;
 }
-.video-seek-prev {
+.ui-video-seek-prev {
 	position: absolute;
 	left: 130px;
 	top: 5px;
 }
-.video-seek-next {
+.ui-video-seek-next {
 	position: absolute;
 	left: 170px;
 	top: 5px;
 }
-.video-volume-slider {
+.ui-video-volume-slider {
 	position: absolute;
 	left: 10px;
 	bottom: 10px;
 	width: 60px;
 }
-.video-scrubber-slider {
+.ui-video-scrubber-slider {
 	position: absolute;
 	right: 10px;
 	bottom: 10px;
 	width: 200px;
 }
 
-.video-scrubber-slider, .video-volume-slider {
+.ui-video-scrubber-slider, .ui-video-volume-slider {
 	height: .3em;
 }
-.video-scrubber-slider .ui-slider-handle, .video-volume-slider .ui-slider-handle {
+.ui-video-scrubber-slider .ui-slider-handle, .ui-video-volume-slider .ui-slider-handle {
 	width: .6em;
 	height: .4em;
 	top: -.1em;
 	margin-left: -.3em;
 }
 
-.video-buffer-status {
+.ui-video-buffer-status {
 	position: absolute;
 	width: 0;
 	top: 0;
@@ -65,4 +65,24 @@
 	margin: 0;
 	opacity: .2;
 	background: #000;
+}
+
+.ui-video-spinner {
+	position: absolute;
+	background-image: url("spinner32.png");
+	height: 32px;
+	width: 992px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+.ui-video-spinner-container {
+	position: absolute;
+	height: 32px;
+	width: 32px;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	z-index: 9999;
 }
