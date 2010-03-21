@@ -353,7 +353,9 @@ $.widget("ui.video", {
 			total = e.originalEvent.total;
 
 			if( lengthComputable ) {
-				this.bufferStatus.width(loaded/total * this.scrubberSliderAbsoluteWidth);
+				var fraction = Math.max(Math.min(loaded / total,1),0);
+
+				this.bufferStatus.width(Math.max(fraction * this.scrubberSliderAbsoluteWidth));
 			}
 
 		},
