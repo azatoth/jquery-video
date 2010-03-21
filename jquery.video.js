@@ -112,7 +112,14 @@ $.widget("ui.video", {
 			self.videoElement = $('<video/>', videoOptions).appendTo( self.element );
 
 			$.each( this.options.sources, function() {
-					self.videoElement.append( $('<source/>',{ 'src': this.title, 'type': this.type }) );
+					self.videoElement.append( 
+						$('<source/>',
+							{
+								'src': this.title,
+								'type': this.type 
+							}
+						) 
+					);
 				}
 			);
 
@@ -153,16 +160,25 @@ $.widget("ui.video", {
 			);
 			self._createControls();
 
-			self.element.hover($.proxy(self._showControls,self), $.proxy(self._hideControls,self));
+			self.element.hover(
+				$.proxy(self._showControls,self),
+				$.proxy(self._hideControls,self)
+			);
 
-			self.controls.delay(this.options.fadeDelay).fadeOut(this.options.fadeSpeed);
+			self.controls
+			.delay(this.options.fadeDelay)
+			.fadeOut(this.options.fadeSpeed);
 
 			self.volumeSlider.slider('value', this.options.volume * 100);
 		},
 
 		_createControls: function() {
 			var self = this;
-			this.controls = $('<div/>', {'class': 'ui-widget ui-widget-content ui-corner-all video-control'})
+			this.controls = $('<div/>', 
+				{
+					'class': 'ui-widget ui-widget-content ui-corner-all video-control'
+				}
+			)
 			.appendTo(this.element)
 			.position({
 					'my': 'bottom',
@@ -171,34 +187,73 @@ $.widget("ui.video", {
 					'offset': '0 -10'
 				}
 			);
-			this.progressDiv = $('<div/>', {'class': 'video-progress'})
+
+			this.progressDiv = $('<div/>', 
+				{
+					'class': 'video-progress'
+				}
+			)
 			.appendTo(this.controls);
-			this.currentProgressSpan = $('<span/>', {'class': 'video-current-progress', 'text': '00:00'})
+
+			this.currentProgressSpan = $('<span/>', 
+				{
+					'class': 'video-current-progress', 'text': '00:00'
+				}
+			)
 			.appendTo(this.progressDiv);
 
-			$('<span/>',{'html': '/', 'class': 'video-progress-divider'}).appendTo(this.progressDiv);
+			$('<span/>',
+				{
+					'html': '/',
+					'class': 'video-progress-divider'
+				}
+			)
+			.appendTo(this.progressDiv);
 
-			this.durationSpan = $('<span/>', {'class': 'video-length', 'text': '00:00'})
+			this.durationSpan = $('<span/>', 
+				{
+					'class': 'video-length', 'text': '00:00'
+				}
+			)
 			.appendTo(this.progressDiv);
 
 
-			this.muteIcon = $('<div/>', {'class': 'ui-icon ui-icon-volume-on video-mute'})
+			this.muteIcon = $('<div/>', 
+				{
+					'class': 'ui-icon ui-icon-volume-on video-mute'
+				}
+			)
 			.appendTo(this.controls)
 			.bind('click.video', $.proxy(self._mute,self));
 
-			this.playIcon = $('<div/>', {'class': 'ui-icon ui-icon-play video-play'})
+			this.playIcon = $('<div/>', 
+				{
+					'class': 'ui-icon ui-icon-play video-play'
+				}
+			)
 			.appendTo(this.controls)
 			.bind('click.video', $.proxy(self._playPause,self));
 
-			this.seekPrevIcon = $('<div/>', {'class': 'ui-icon ui-icon-seek-prev video-seek-prev'})
+			this.seekPrevIcon = $('<div/>',
+				{
+					'class': 'ui-icon ui-icon-seek-prev video-seek-prev'
+				}
+			)
 			.appendTo(this.controls)
 			.bind('click.video', $.proxy(self.rewind,self));
 
-			this.seekNextIcon = $('<div/>', {'class': 'ui-icon ui-icon-seek-next video-seek-next'})
+			this.seekNextIcon = $('<div/>', 
+				{
+					'class': 'ui-icon ui-icon-seek-next video-seek-next'
+				}
+			)
 			.appendTo(this.controls)
 			.bind('click.video', $.proxy(self.forward,self));
 
-			this.volumeSlider = $('<div/>', {'class': 'video-volume-slider'})
+			this.volumeSlider = $('<div/>', 
+				{
+					'class': 'video-volume-slider'}
+			)
 			.appendTo(this.controls)
 			.slider({
 					range: 'min',
@@ -210,7 +265,11 @@ $.widget("ui.video", {
 				}
 			);
 
-			this.scrubberSlider = $('<div/>', {'class': 'video-scrubber-slider'})
+			this.scrubberSlider = $('<div/>',
+				{
+					'class': 'video-scrubber-slider'
+				}
+			)
 			.appendTo(this.controls)
 			.slider({
 					range: 'min',
@@ -221,9 +280,14 @@ $.widget("ui.video", {
 					}
 				}
 			);
+
 			this.scrubberSliderAbsoluteWidth = this.scrubberSlider.width();
-			
-			this.bufferStatus = $('<div/>', {'class': 'video-buffer-status ui-corner-all'}).appendTo( this.scrubberSlider );
+
+			this.bufferStatus = $('<div/>', 
+				{
+					'class': 'video-buffer-status ui-corner-all'
+				}
+			).appendTo( this.scrubberSlider );
 
 
 		},
@@ -276,9 +340,14 @@ $.widget("ui.video", {
 
 		_event_timeupdate: function() {
 			if( ! this.videoElement[0].seeking ) {
-				this.scrubberSlider.slider('value', [(this.videoElement[0].currentTime/this.videoElement[0].duration)*100]);
-				this.durationSpan.text(this._formatTime(this.videoElement[0].duration));
-				this.currentProgressSpan.text(this._formatTime(this.videoElement[0].currentTime));
+				var duration = this.videoElement[0].duration;
+				var currentTime = this.videoElement[0].currentTime;
+				this.scrubberSlider.slider(
+					'value', 
+					[(currentTime/duration)*100]
+				);
+				this.durationSpan.text(this._formatTime(duration));
+				this.currentProgressSpan.text(this._formatTime(currentTime));
 			}
 		},
 
@@ -306,15 +375,15 @@ $.widget("ui.video", {
 		unmute: function() {
 			this.videoElement[0].muted = false;
 		},
-        rewind: function() {
+		rewind: function() {
 			this.videoElement[0].playbackRate -= 2;
-        },
-        forward: function() {
+		},
+		forward: function() {
 			this.videoElement[0].playbackRate += 2;
-        },
-        volume: function(vol) {
+		},
+		volume: function(vol) {
 			this.videoElement[0].volume = Math.max(Math.min(parseInt(vol)/100,1),0);
-        },
+		},
 		scrub: function(pos){
 			var duration = this.videoElement[0].duration;
 			pos = Math.max(Math.min(parseInt(pos)/100,1),0);
