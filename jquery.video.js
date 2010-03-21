@@ -91,7 +91,7 @@ $.widget("ui.video", {
 			poster: null,
 			autoPlay: false,
 			loop: false,
-			autoBuffer: true,
+			autoBuffer: false,
 			degrade: '<p>Your browser does not support this widget.</p>'
 		},
 
@@ -109,7 +109,13 @@ $.widget("ui.video", {
 				html: self.options.degrade
 			};
 
-			self.videoElement = $('<video/>', videoOptions).appendTo( self.element );
+			if( self.element.is('video') ) {
+				self.videoElement = self.element;
+				self.element.wrapAll( '<div />' );
+				self.element = self.element.parent();
+			} else {
+				self.videoElement = $('<video/>', videoOptions).appendTo( self.element );
+			}
 
 			$.each( this.options.sources, function() {
 					self.videoElement.append( 
@@ -154,7 +160,7 @@ $.widget("ui.video", {
 					if( self["_event_" + this] ) {
 						self.videoElement.bind( this + ".video", $.proxy(self["_event_" + this],self) );
 					} else {
-						//self.videoElement.bind( this + ".video", $.proxy(function(){console.log("event %s", this, arguments)},this) );
+						self.videoElement.bind( this + ".video", $.proxy(function(){console.log("event %s", this, arguments)},this) );
 					}
 				}
 			);
@@ -184,7 +190,8 @@ $.widget("ui.video", {
 					'my': 'bottom',
 					'at': 'bottom',
 					'of': this.videoElement,
-					'offset': '0 -10'
+					'offset': '0 -10',
+					'collision': 'none'
 				}
 			);
 
@@ -356,7 +363,8 @@ $.widget("ui.video", {
 					'my': 'bottom',
 					'at': 'bottom',
 					'of': this.videoElement,
-					'offset': '0 -10'
+					'offset': '0 -10',
+					'collision': 'none'
 				}
 			);
 		},

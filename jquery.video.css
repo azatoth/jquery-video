@@ -1,8 +1,7 @@
 .video-control {
 	width: 320px;
 	height: 40px;
-/*	background: #787878;*/
-	position: relative;
+	position: absolute;
 	opacity: .8;
 }
 .video-progress {
