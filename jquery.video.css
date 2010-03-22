@@ -46,6 +46,12 @@
 	width: 200px;
 }
 
+.ui-video-scrubber-slider-hover {
+	font-family: monospace;
+	position: absolute;
+	font-size: 10px;
+}
+
 .ui-video-scrubber-slider, .ui-video-volume-slider {
 	height: .3em;
 }

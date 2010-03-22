@@ -183,34 +183,34 @@ $.widget("ui.video", {
 
 		_createControls: function() {
 			var self = this;
-			this.controls = $('<div/>', 
+			self.controls = $('<div/>', 
 				{
 					'class': 'ui-widget ui-widget-content ui-corner-all ui-video-control'
 				}
 			)
-			.prependTo(this.wrapperElement)
+			.prependTo(self.wrapperElement)
 			.position({
 					'my': 'bottom',
 					'at': 'bottom',
-					'of': this.element,
+					'of': self.element,
 					'offset': '0 -10',
 					'collision': 'none'
 				}
 			);
 
-			this.progressDiv = $('<div/>', 
+			self.progressDiv = $('<div/>', 
 				{
 					'class': 'ui-video-progress'
 				}
 			)
-			.appendTo(this.controls);
+			.appendTo(self.controls);
 
-			this.currentProgressSpan = $('<span/>', 
+			self.currentProgressSpan = $('<span/>', 
 				{
 					'class': 'ui-video-current-progress', 'text': '00:00'
 				}
 			)
-			.appendTo(this.progressDiv);
+			.appendTo(self.progressDiv);
 
 			$('<span/>',
 				{
@@ -218,56 +218,59 @@ $.widget("ui.video", {
 					'class': 'ui-video-progress-divider'
 				}
 			)
-			.appendTo(this.progressDiv);
+			.appendTo(self.progressDiv);
 
-			this.durationSpan = $('<span/>', 
+			self.durationSpan = $('<span/>', 
 				{
 					'class': 'ui-video-length', 'text': '00:00'
 				}
 			)
-			.appendTo(this.progressDiv);
+			.appendTo(self.progressDiv);
 
 
-			this.muteIcon = $('<div/>', 
+			self.muteIcon = $('<div/>', 
 				{
 					'class': 'ui-icon ui-icon-volume-on ui-video-mute'
 				}
 			)
-			.appendTo(this.controls)
+			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self._mute,self));
 
-			this.playIcon = $('<div/>', 
+			self.playIcon = $('<div/>', 
 				{
 					'class': 'ui-icon ui-icon-play ui-video-play'
 				}
 			)
-			.appendTo(this.controls)
+			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self._playPause,self));
 
-			this.seekPrevIcon = $('<div/>',
+			self.seekPrevIcon = $('<div/>',
 				{
 					'class': 'ui-icon ui-icon-seek-prev ui-video-seek-prev'
 				}
 			)
-			.appendTo(this.controls)
+			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self.rewind,self));
 
-			this.seekNextIcon = $('<div/>', 
+			self.seekNextIcon = $('<div/>', 
 				{
 					'class': 'ui-icon ui-icon-seek-next ui-video-seek-next'
 				}
 			)
-			.appendTo(this.controls)
+			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self.forward,self));
 
-			this.volumeSlider = $('<div/>', 
+			self.volumeSlider = $('<div/>', 
 				{
 					'class': 'ui-video-volume-slider'}
 			)
-			.appendTo(this.controls)
+			.appendTo(self.controls)
 			.slider({
 					range: 'min',
 					animate: true,
+					stop: function( e, ui ) {
+						ui.handle.blur();
+					},
 					slide: function( e, ui ) {
 						self.volume.apply(self,[ui.value]);
 						return true;
@@ -275,31 +278,68 @@ $.widget("ui.video", {
 				}
 			);
 
-			this.scrubberSlider = $('<div/>',
+			self.scrubberSliderHover =  $('<div/>',
+				{
+					'class': 'ui-widget-content ui-corner-all ui-video-scrubber-slider-hover'
+				}
+			)
+			.hide();
+
+			self.scrubberSlider = $('<div/>',
 				{
 					'class': 'ui-video-scrubber-slider'
 				}
 			)
-			.appendTo(this.controls)
+			.appendTo(self.controls)
 			.slider({
 					range: 'min',
 					animate: true,
+					start: function( e, ui ) {
+						self._scrubberHoverUpdate.apply(self,[ui.handle, ui.value]);
+						self.scrubberSliderHover.fadeIn('fast');
+					},
+					stop: function( e, ui ) {
+						ui.handle.blur();
+						self.scrubberSliderHover.fadeOut('fast');
+						// update the current timer as it seems not to be updated at all before starting playback
+						self.currentProgressSpan.text(self._formatTime(self.element[0].duration * (ui.value/100)));
+					},
 					slide: function( e, ui ) {
+						self._scrubberHoverUpdate.apply(self,[ui.handle, ui.value]);
 						self.scrub.apply(self,[ui.value]);
 						return true;
 					}
 				}
 			);
 
-			this.scrubberSliderAbsoluteWidth = this.scrubberSlider.width();
+			self.scrubberSliderHover.appendTo(self.scrubberSlider);
 
-			this.bufferStatus = $('<div/>', 
+			self.scrubberSliderAbsoluteWidth = self.scrubberSlider.width();
+
+			self.bufferStatus = $('<div/>', 
 				{
 					'class': 'ui-video-buffer-status ui-corner-all'
 				}
-			).appendTo( this.scrubberSlider );
+			).appendTo( self.scrubberSlider );
 
 
+		},
+		_scrubberHoverUpdate: function( elem, value ) {
+			var self = this;
+			var duration = self.element[0].duration;
+
+			self.scrubberSliderHover
+			.text(self._formatTime(duration * (value/100)))
+			.position({
+					'my': 'bottom',
+					'at': 'top',
+					'of': elem,
+					'offset': '0 -10',
+					'collision': 'none'
+				}
+			);
+
+			
 		},
 		_playPause: function() {
 			if( this.element[0].paused ) {
