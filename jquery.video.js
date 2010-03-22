@@ -167,6 +167,7 @@ $.widget("ui.video", {
 			self.spinner = $('<div/>', {'class': 'ui-video-spinner'}).appendTo(self.spinnerContainer);
 
 			self.controls
+			.fadeIn(this.options.fadeSpeed)
 			.delay(this.options.fadeDelay)
 			.fadeOut(this.options.fadeSpeed);
 
