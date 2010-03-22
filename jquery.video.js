@@ -107,6 +107,8 @@ $.widget("ui.video", {
 
 			self.element.wrapAll( $('<div />',{'class': 'ui-video-widget'}) );
 			self.wrapperElement = self.element.parent();
+			self.wrapperElement.width( self.element.outerWidth(true) );
+			self.wrapperElement.height( self.element.outerHeight(true) );
 
 			self.oldVideoOpts = {};
 
@@ -411,14 +413,17 @@ $.widget("ui.video", {
 		},
 
 		_event_resize: function() {
-			this.controls.position({
+			var self = this;
+			self.controls.position({
 					'my': 'bottom',
 					'at': 'bottom',
-					'of': this.element,
+					'of': self.element,
 					'offset': '0 -10',
 					'collision': 'none'
 				}
 			);
+			self.wrapperElement.width( self.element.outerWidth(true) );
+			self.wrapperElement.height( self.element.outerHeight(true) );
 		},
 
 		// User functions
