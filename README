@@ -1,1 +1,18 @@
-jQuery UI Video widget
+The jQuery UI Video widget enhances your HTML5 <video>
+
+Demo: http://js.azatoth.net/video/example.html
+
+
+
+Features:
+* Adds full jQuery UI Themeroller support
+* Pause, seek, rewind
+* Volume control
+* Scrub bar with time elapsed and remaining
+* Unobstrusive and minimal UI
+
+
+Size: 2.0k minified and gzipped.
+
+Download: click `download source` above.
+
