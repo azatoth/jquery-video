@@ -1,7 +1,7 @@
 # The jQuery UI Video widget enhances your HTML5 `<video>`
 
 ## Demo
-* http://js.azatoth.net/video/example.html
+* <http://js.azatoth.net/video/example.html>
 
 ## Features
 * Adds full jQuery UI Themeroller support
