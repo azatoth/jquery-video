@@ -102,7 +102,7 @@ $.widget("ui.video", {
 				autoplay: self.options.autoPlay,
 				controls: false,
 				loop: self.options.loop,
-				autobuffer: self.options.autoBuffer,
+				autobuffer: self.options.autoBuffer
 			};
 
 			self.element.wrapAll( $('<div />',{'class': 'ui-video-widget'}) );
