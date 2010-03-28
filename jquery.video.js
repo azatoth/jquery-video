@@ -94,7 +94,6 @@ $.widget("ui.video", {
 
 		_create: function() {
 			var self = this;
-			this.wasPureVideoElement = false;
 
 			var videoOptions = {
 				width: Math.max( self.element.outerWidth() , self.options.minWidth ),
@@ -106,10 +105,19 @@ $.widget("ui.video", {
 			};
 
 			self.element.wrapAll( $('<div />',{'class': 'ui-video-widget'}) );
+
+			/**
+			 * @type {!Object}
+			 * @private
+			 */
 			self.wrapperElement = self.element.parent();
 			self.wrapperElement.width( self.element.outerWidth(true) );
 			self.wrapperElement.height( self.element.outerHeight(true) );
 
+			/**
+			 * @type {!Object}
+			 * @private
+			 */
 			self.oldVideoOpts = {};
 
 			$.each( videoOptions , function( key, value) {
@@ -123,41 +131,32 @@ $.widget("ui.video", {
 					}
 				}
 			);
-			var videoEvents = [
-				"abort",
-				"canplay",
-				"canplaythrough",
-				"canshowcurrentframe",
-				"dataunavailable",
-				"durationchange",
-				"emptied",
-				"empty",
-				"ended",
-				"error",
-				"loadedfirstframe",
-				"loadedmetadata",
-				"loadstart",
-				"pause",
-				"play",
-				"progress",
-				"ratechange",
-				"seeked",
-				"seeking",
-				"suspend",
-				"timeupdate",
-				"volumechange",
-				"waiting",
-				"resize"
-			];
 
-			$.each( videoEvents, function(){
-					if( self["_event_" + this] ) {
-						self.element.bind( this + ".video", $.proxy(self["_event_" + this],self) );
-					} else {
-						self.element.bind( this + ".video", $.proxy(function(){console.log("event %s", this, arguments)},this) );
-					}
-				}
-			);
+			self.element.bind( "abort.video", $.proxy( self._event_abort, self ) );
+			self.element.bind( "canplay.video", $.proxy( self._event_canplay, self ) );
+			self.element.bind( "canplaythrough.video", $.proxy( self._event_canplaythrough, self ) );
+			self.element.bind( "canshowcurrentframe.video", $.proxy( self._event_canshowcurrentframe, self ) );
+			self.element.bind( "dataunavailable.video", $.proxy( self._event_dataunavailable, self ) );
+			self.element.bind( "durationchange.video", $.proxy( self._event_durationchange, self ) );
+			self.element.bind( "emptied.video", $.proxy( self._event_emptied, self ) );
+			self.element.bind( "empty.video", $.proxy( self._event_empty, self ) );
+			self.element.bind( "ended.video", $.proxy( self._event_ended, self ) );
+			self.element.bind( "error.video", $.proxy( self._event_error, self ) );
+			self.element.bind( "loadedfirstframe.video", $.proxy( self._event_loadedfirstframe, self ) );
+			self.element.bind( "loadedmetadata.video", $.proxy( self._event_loadedmetadata, self ) );
+			self.element.bind( "loadstart.video", $.proxy( self._event_loadstart, self ) );
+			self.element.bind( "pause.video", $.proxy( self._event_pause, self ) );
+			self.element.bind( "play.video", $.proxy( self._event_play, self ) );
+			self.element.bind( "progress.video", $.proxy( self._event_progress, self ) );
+			self.element.bind( "ratechange.video", $.proxy( self._event_ratechange, self ) );
+			self.element.bind( "seeked.video", $.proxy( self._event_seeked, self ) );
+			self.element.bind( "seeking.video", $.proxy( self._event_seeking, self ) );
+			self.element.bind( "suspend.video", $.proxy( self._event_suspend, self ) );
+			self.element.bind( "timeupdate.video", $.proxy( self._event_timeupdate, self ) );
+			self.element.bind( "volumechange.video", $.proxy( self._event_volumechange, self ) );
+			self.element.bind( "waiting.video", $.proxy( self._event_waiting, self ) );
+			self.element.bind( "resize.video", $.proxy( self._event_resize, self ) );
+
 			self._createControls();
 
 			self.wrapperElement.hover(
@@ -165,24 +164,38 @@ $.widget("ui.video", {
 				$.proxy(self._hideControls,self)
 			);
 
+			/**
+			 * @type {!Object}
+			 * @private
+			 */
 			self.spinnerContainer = $('<div/>', {'class': 'ui-video-spinner-container'});
+
+			/**
+			 * @type {!Object}
+			 * @private
+			 */
 			self.spinner = $('<div/>', {'class': 'ui-video-spinner'}).appendTo(self.spinnerContainer);
 
 			self.controls
-			.fadeIn(this.options.fadeSpeed)
-			.delay(this.options.fadeDelay)
-			.fadeOut(this.options.fadeSpeed);
+			.fadeIn(self.options.fadeSpeed)
+			.delay(self.options.fadeDelay)
+			.fadeOut(self.options.fadeSpeed);
 
-			self.volumeSlider.slider('value', this.options.volume * 100);
+			self.volumeSlider.slider('value', self.options.volume * 100);
 
 			// webkit bug
-			if( this.options.autoPlay && $.browser.webkit ) {
+			if( self.options.autoPlay && $.browser.webkit ) {
 				self.play();
 			}
 		},
 
 		_createControls: function() {
 			var self = this;
+
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.controls = $('<div/>', 
 				{
 					'class': 'ui-widget ui-widget-content ui-corner-all ui-video-control'
@@ -198,6 +211,10 @@ $.widget("ui.video", {
 				}
 			);
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.progressDiv = $('<div/>', 
 				{
 					'class': 'ui-video-progress'
@@ -205,6 +222,10 @@ $.widget("ui.video", {
 			)
 			.appendTo(self.controls);
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.currentProgressSpan = $('<span/>', 
 				{
 					'class': 'ui-video-current-progress', 'text': '00:00'
@@ -220,6 +241,10 @@ $.widget("ui.video", {
 			)
 			.appendTo(self.progressDiv);
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.durationSpan = $('<span/>', 
 				{
 					'class': 'ui-video-length', 'text': '00:00'
@@ -227,6 +252,10 @@ $.widget("ui.video", {
 			)
 			.appendTo(self.progressDiv);
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 
 			self.muteIcon = $('<div/>', 
 				{
@@ -236,6 +265,10 @@ $.widget("ui.video", {
 			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self._mute,self));
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.playIcon = $('<div/>', 
 				{
 					'class': 'ui-icon ui-icon-play ui-video-play'
@@ -244,6 +277,10 @@ $.widget("ui.video", {
 			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self._playPause,self));
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.seekPrevIcon = $('<div/>',
 				{
 					'class': 'ui-icon ui-icon-seek-prev ui-video-seek-prev'
@@ -252,6 +289,10 @@ $.widget("ui.video", {
 			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self.rewind,self));
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.seekNextIcon = $('<div/>', 
 				{
 					'class': 'ui-icon ui-icon-seek-next ui-video-seek-next'
@@ -260,6 +301,10 @@ $.widget("ui.video", {
 			.appendTo(self.controls)
 			.bind('click.video', $.proxy(self.forward,self));
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.volumeSlider = $('<div/>', 
 				{
 					'class': 'ui-video-volume-slider'}
@@ -278,6 +323,10 @@ $.widget("ui.video", {
 				}
 			);
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.scrubberSliderHover =  $('<div/>',
 				{
 					'class': 'ui-widget-content ui-corner-all ui-video-scrubber-slider-hover'
@@ -285,6 +334,10 @@ $.widget("ui.video", {
 			)
 			.hide();
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.scrubberSlider = $('<div/>',
 				{
 					'class': 'ui-video-scrubber-slider'
@@ -314,8 +367,16 @@ $.widget("ui.video", {
 
 			self.scrubberSliderHover.appendTo(self.scrubberSlider);
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.scrubberSliderAbsoluteWidth = self.scrubberSlider.width();
 
+			/**
+			 * @type {!jQuery}
+			 * @private
+			 */
 			self.bufferStatus = $('<div/>', 
 				{
 					'class': 'ui-video-buffer-status ui-corner-all'
@@ -324,6 +385,9 @@ $.widget("ui.video", {
 
 
 		},
+		/** 
+		 * @private
+		 */
 		_scrubberHoverUpdate: function( elem, value ) {
 			var self = this;
 			var duration = self.element[0].duration;
@@ -339,25 +403,49 @@ $.widget("ui.video", {
 				}
 			);
 
-			
+
 		},
+		/** 
+		 * @private
+		 */
 		_playPause: function() {
-			if( this.element[0].paused ) {
-				this.play();
+			var self = this;
+			if( self.element[0].paused ) {
+				self.play();
 			} else {
-				this.pause();
+				self.pause();
 			}
 		},
+		/** 
+		 * @private
+		 */
 		_mute: function() {
-			this.muteIcon.toggleClass('ui-icon-volume-on').toggleClass('ui-icon-volume-off');
-			this.element[0].muted = !this.element[0].muted;
+			var self = this;
+			self.muteIcon.toggleClass('ui-icon-volume-on').toggleClass('ui-icon-volume-off');
+			self.element[0].muted = !self.element[0].muted;
 		},
+		/** 
+		 * @private
+		 */
 		_hideControls: function(){
-			this.controls.stop(true,true).delay(this.options.fadeDelay).fadeOut(this.options.fadeSpeed);
+			var self = this;
+			self.controls
+			.stop(true,true)
+			.delay(self.options.fadeDelay)
+			.fadeOut(self.options.fadeSpeed);
 		},
+		/** 
+		 * @private
+		 */
 		_showControls: function(){
-			this.controls.stop(true,true).fadeIn(this.options.fadeSpeed);
+			var self = this;
+			self.controls
+			.stop(true,true)
+			.fadeIn(self.options.fadeSpeed);
 		},
+		/** 
+		 * @private
+		 */
 		_hideSpinner: function(){
 			var self = this;
 			if( self.spinnerId ) {
@@ -366,10 +454,13 @@ $.widget("ui.video", {
 				self.spinnerContainer.fadeOut('fast').remove();
 			}
 		},
+		/** 
+		 * @private
+		 */
 		_showSpinner: function(){
 			var self = this;
 			if( ! self.spinnerId ) {
-				this.spinner.css('left', 0);
+				self.spinner.css('left', 0);
 				self.spinnerContainer
 				.appendTo(self.wrapperElement)
 				.position({
@@ -379,8 +470,8 @@ $.widget("ui.video", {
 						'collision': 'none'
 					}
 				).fadeIn('fast');
-				var spinnerWidth = this.spinner.width();
-				var spinnerContainerWidth = this.spinnerContainer.width();
+				var spinnerWidth = self.spinner.width();
+				var spinnerContainerWidth = self.spinnerContainer.width();
 				self.spinnerId = setInterval(function(){
 						var cur_left = Math.abs(self.spinner.position().left);
 
@@ -389,6 +480,10 @@ $.widget("ui.video", {
 					},50);
 			}
 		},		
+
+		/** 
+		 * @private
+		 */
 		_formatTime: function( seconds ) {
 			var m = parseInt(seconds / 60);
 			var s = parseInt(seconds % 60);
@@ -399,7 +494,11 @@ $.widget("ui.video", {
 
 
 		// Events 
+		/** 
+		 * @private
+		 */
 		_event_progress: function(e) {
+			var self = this;
 			var lengthComputable = e.originalEvent.lengthComputable,
 			loaded = e.originalEvent.loaded,
 			total = e.originalEvent.total;
@@ -407,51 +506,178 @@ $.widget("ui.video", {
 			if( lengthComputable ) {
 				var fraction = Math.max(Math.min(loaded / total,1),0);
 
-				this.bufferStatus.width(Math.max(fraction * this.scrubberSliderAbsoluteWidth));
+				this.bufferStatus.width(Math.max(fraction * self.scrubberSliderAbsoluteWidth));
 			}
 
 		},
+		/** 
+		 * @private
+		 */
 		_event_seeked: function() {
-			this._hideSpinner();
+			var self = this;
+			self._hideSpinner();
 		},
+		/** 
+		 * @private
+		 */
 		_event_canplay: function() {
-			this._hideSpinner();
+			var self = this;
+			self._hideSpinner();
 		},
+		/** 
+		 * @private
+		 */
 		_event_loadstart: function() {
-			this._showSpinner();
+			var self = this;
+			self._showSpinner();
 		},
+		/** 
+		 * @private
+		 */
 		_event_durationchange: function() {
-			this._showSpinner();
+			var self = this;
+			self._showSpinner();
 		},
+		/** 
+		 * @private
+		 */
 		_event_seeking: function() {
-			this._showSpinner();
+			var self = this;
+			self._showSpinner();
 		},
+		/** 
+		 * @private
+		 */
 		_event_waiting: function() {
-			this._showSpinner();
+			var self = this;
+			self._showSpinner();
 		},
+		/** 
+		 * @private
+		 */
 		_event_loadedmetadata: function() {
-			this.durationSpan.text(this._formatTime(this.element[0].duration));
+			var self = this;
+			self.durationSpan.text(self._formatTime(self.element[0].duration));
 		},
+		/** 
+		 * @private
+		 */
 		_event_play: function() {
-			this.playIcon.addClass('ui-icon-pause').removeClass('ui-icon-play');
+			var self = this;
+			self.playIcon.addClass('ui-icon-pause').removeClass('ui-icon-play');
 		},
+		/** 
+		 * @private
+		 */
 		_event_pause: function() {
-			this.playIcon.removeClass('ui-icon-pause').addClass('ui-icon-play');
+			var self = this;
+			self.playIcon.removeClass('ui-icon-pause').addClass('ui-icon-play');
 		},
 
+		/** 
+		 * @private
+		 */
 		_event_timeupdate: function() {
-			if( ! this.element[0].seeking ) {
-				var duration = this.element[0].duration;
-				var currentTime = this.element[0].currentTime;
-				this.scrubberSlider.slider(
+			var self = this;
+			if( ! self.element[0].seeking ) {
+				var duration = self.element[0].duration;
+				var currentTime = self.element[0].currentTime;
+				self.scrubberSlider.slider(
 					'value', 
 					[(currentTime/duration)*100]
 				);
-				this.durationSpan.text(this._formatTime(duration));
-				this.currentProgressSpan.text(this._formatTime(currentTime));
+				self.durationSpan.text(self._formatTime(duration));
+				self.currentProgressSpan.text(self._formatTime(currentTime));
 			}
 		},
 
+		/** 
+		 * @private
+		 */
+		_event_abort: function() {
+			console.log("event abort not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_canplaythrough: function() {
+			console.log("event canplaythrough not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_canshowcurrentframe: function() {
+			console.log("event canshowcurrentframe not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_dataunavailable: function() {
+			console.log("event dataunavailable not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_emptied: function() {
+			console.log("event emptied not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_empty: function() {
+			console.log("event empty not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_ended: function() {
+			console.log("event ended not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_error: function() {
+			console.log("event error not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_loadedfirstframe: function() {
+			console.log("event loadedfirstframe not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_ratechange: function() {
+			console.log("event ratechange not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_suspend: function() {
+			console.log("event suspend not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
+		_event_volumechange: function() {
+			console.log("event volumechange not implemented",arguments);
+		},
+
+		/** 
+		 * @private
+		 */
 		_event_resize: function() {
 			var self = this;
 			self.controls.position({
@@ -469,30 +695,38 @@ $.widget("ui.video", {
 		// User functions
 
 		play: function() {
-			this.element[0].play();
+			var self = this;
+			self.element[0].play();
 		},
 		pause: function() {
-			this.element[0].pause();
+			var self = this;
+			self.element[0].pause();
 		},
 		mute: function() {
-			this.element[0].muted = true;
+			var self = this;
+			self.element[0].muted = true;
 		},
 		unmute: function() {
-			this.element[0].muted = false;
+			var self = this;
+			self.element[0].muted = false;
 		},
 		rewind: function() {
-			this.element[0].playbackRate -= 2;
+			var self = this;
+			self.element[0].playbackRate -= 2;
 		},
 		forward: function() {
-			this.element[0].playbackRate += 2;
+			var self = this;
+			self.element[0].playbackRate += 2;
 		},
 		volume: function(vol) {
-			this.element[0].volume = Math.max(Math.min(parseInt(vol)/100,1),0);
+			var self = this;
+			self.element[0].volume = Math.max(Math.min(parseInt(vol)/100,1),0);
 		},
 		scrub: function(pos){
-			var duration = this.element[0].duration;
+			var self = this;
+			var duration = self.element[0].duration;
 			pos = Math.max(Math.min(parseInt(pos)/100,1),0);
-			this.element[0].currentTime = pos > 1 ? duration : duration * pos;
+			self.element[0].currentTime = pos > 1 ? duration : duration * pos;
 		},
 
 		// The destroyer
@@ -505,6 +739,7 @@ $.widget("ui.video", {
 
 			self.controls.remove();
 			self.element.unwrap();
+			self.element.unbind( ".video" );
 			$.Widget.prototype.destroy.apply(self, arguments); // default destroy
 		}
 	});
