@@ -132,30 +132,51 @@ $.widget("ui.video", {
 				}
 			);
 
-			self.element.bind( "abort.video", $.proxy( self._event_abort, self ) );
-			self.element.bind( "canplay.video", $.proxy( self._event_canplay, self ) );
-			self.element.bind( "canplaythrough.video", $.proxy( self._event_canplaythrough, self ) );
-			self.element.bind( "canshowcurrentframe.video", $.proxy( self._event_canshowcurrentframe, self ) );
-			self.element.bind( "dataunavailable.video", $.proxy( self._event_dataunavailable, self ) );
-			self.element.bind( "durationchange.video", $.proxy( self._event_durationchange, self ) );
-			self.element.bind( "emptied.video", $.proxy( self._event_emptied, self ) );
-			self.element.bind( "empty.video", $.proxy( self._event_empty, self ) );
-			self.element.bind( "ended.video", $.proxy( self._event_ended, self ) );
-			self.element.bind( "error.video", $.proxy( self._event_error, self ) );
-			self.element.bind( "loadedfirstframe.video", $.proxy( self._event_loadedfirstframe, self ) );
-			self.element.bind( "loadedmetadata.video", $.proxy( self._event_loadedmetadata, self ) );
-			self.element.bind( "loadstart.video", $.proxy( self._event_loadstart, self ) );
-			self.element.bind( "pause.video", $.proxy( self._event_pause, self ) );
-			self.element.bind( "play.video", $.proxy( self._event_play, self ) );
-			self.element.bind( "progress.video", $.proxy( self._event_progress, self ) );
-			self.element.bind( "ratechange.video", $.proxy( self._event_ratechange, self ) );
-			self.element.bind( "seeked.video", $.proxy( self._event_seeked, self ) );
-			self.element.bind( "seeking.video", $.proxy( self._event_seeking, self ) );
-			self.element.bind( "suspend.video", $.proxy( self._event_suspend, self ) );
-			self.element.bind( "timeupdate.video", $.proxy( self._event_timeupdate, self ) );
-			self.element.bind( "volumechange.video", $.proxy( self._event_volumechange, self ) );
-			self.element.bind( "waiting.video", $.proxy( self._event_waiting, self ) );
-			self.element.bind( "resize.video", $.proxy( self._event_resize, self ) );
+			var videoEvents = [
+				"abort",
+				"canplay",
+				"canplaythrough",
+				"canshowcurrentframe",
+				"dataunavailable",
+				"durationchange",
+				"emptied",
+				"empty",
+				"ended",
+				"error",
+				"loadedfirstframe",
+				"loadedmetadata",
+				"loadstart",
+				"pause",
+				"play",
+				"progress",
+				"ratechange",
+				"seeked",
+				"seeking",
+				"suspend",
+				"timeupdate",
+				"volumechange",
+				"waiting",
+				"resize"
+			];
+
+			$.each( videoEvents, function(){
+					if( self["_event_" + this] ) {
+						self.element.bind( 
+							this + ".video", 
+							$.proxy(self["_event_" + this],self) 
+						);
+					} else {
+						self.element.bind( 
+							this + ".video", 
+							$.proxy(function(){
+									console.log("event %s not implemented", this, arguments)
+								},
+								this
+							) 
+						);
+					}
+				}
+			);
 
 			self._createControls();
 
@@ -589,90 +610,6 @@ $.widget("ui.video", {
 				self.durationSpan.text(self._formatTime(duration));
 				self.currentProgressSpan.text(self._formatTime(currentTime));
 			}
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_abort: function() {
-			console.log("event abort not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_canplaythrough: function() {
-			console.log("event canplaythrough not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_canshowcurrentframe: function() {
-			console.log("event canshowcurrentframe not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_dataunavailable: function() {
-			console.log("event dataunavailable not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_emptied: function() {
-			console.log("event emptied not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_empty: function() {
-			console.log("event empty not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_ended: function() {
-			console.log("event ended not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_error: function() {
-			console.log("event error not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_loadedfirstframe: function() {
-			console.log("event loadedfirstframe not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_ratechange: function() {
-			console.log("event ratechange not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_suspend: function() {
-			console.log("event suspend not implemented",arguments);
-		},
-
-		/** 
-		 * @private
-		 */
-		_event_volumechange: function() {
-			console.log("event volumechange not implemented",arguments);
 		},
 
 		/** 
