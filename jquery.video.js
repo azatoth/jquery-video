@@ -542,8 +542,8 @@ $.widget("ui.video", {
 		_event_progress: function(e) {
 			var self = this;
 			var lengthComputable = e.originalEvent.lengthComputable,
-			var loaded = e.originalEvent.loaded,
-			var total = e.originalEvent.total;
+			loaded = e.originalEvent.loaded,
+			total = e.originalEvent.total;
 
 			if( lengthComputable ) {
 				var fraction = Math.max(Math.min(loaded / total,1),0);
