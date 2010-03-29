@@ -379,9 +379,14 @@ $.widget("ui.video", {
 						self.currentProgressSpan.text(self._formatTime(self.element[0].duration * (ui.value/100)));
 					},
 					slide: function( e, ui ) {
-						self._scrubberHoverUpdate.apply(self,[ui.handle, ui.value]);
-						self.scrub.apply(self,[ui.value]);
-						return true;
+						if( self.element[0].readyState === HTMLMediaElement.HAVE_NOTHING ) {
+							// We don't have any metadata, so scrubbing is not allowed
+							return false;
+						} else {
+							self._scrubberHoverUpdate.apply(self,[ui.handle, ui.value]);
+							self.scrub.apply(self,[ui.value]);
+							return true;
+						}
 					}
 				}
 			);
