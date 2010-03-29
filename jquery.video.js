@@ -369,14 +369,30 @@ $.widget("ui.video", {
 					range: 'min',
 					animate: true,
 					start: function( e, ui ) {
-						self._scrubberHoverUpdate.apply(self,[ui.handle, ui.value]);
-						self.scrubberSliderHover.fadeIn('fast');
+						if( self.element[0].readyState === HTMLMediaElement.HAVE_NOTHING ) {
+							// We don't have any metadata, so scrubbing is not allowed
+							return false;
+						} else {
+							self.scrubberSliderHover.fadeIn('fast');
+							self._scrubberHoverUpdate.apply(self,[ui.handle, ui.value]);
+							return true;
+						}
 					},
 					stop: function( e, ui ) {
+
 						ui.handle.blur();
-						self.scrubberSliderHover.fadeOut('fast');
-						// update the current timer as it seems not to be updated at all before starting playback
-						self.currentProgressSpan.text(self._formatTime(self.element[0].duration * (ui.value/100)));
+						if( self.scrubberSliderHover.is(':visible') ) {
+							self.scrubberSliderHover.fadeOut('fast');
+						}
+
+						if( self.element[0].readyState === HTMLMediaElement.HAVE_NOTHING ) {
+							// We don't have any metadata, so scrubbing is not allowed
+							return false;
+						} else {
+							// update the current timer as it seems not to be updated at all before starting playback
+							self.currentProgressSpan.text(self._formatTime(self.element[0].duration * (ui.value/100)));
+							return true;
+						}
 					},
 					slide: function( e, ui ) {
 						if( self.element[0].readyState === HTMLMediaElement.HAVE_NOTHING ) {
@@ -526,8 +542,8 @@ $.widget("ui.video", {
 		_event_progress: function(e) {
 			var self = this;
 			var lengthComputable = e.originalEvent.lengthComputable,
-			loaded = e.originalEvent.loaded,
-			total = e.originalEvent.total;
+			var loaded = e.originalEvent.loaded,
+			var total = e.originalEvent.total;
 
 			if( lengthComputable ) {
 				var fraction = Math.max(Math.min(loaded / total,1),0);
@@ -667,7 +683,7 @@ $.widget("ui.video", {
 		scrub: function(pos){
 			var self = this;
 			var duration = self.element[0].duration;
-			pos = Math.max(Math.min(parseInt(pos)/100,1),0);
+			var pos = Math.max(Math.min(parseInt(pos)/100,1),0);
 			self.element[0].currentTime = pos > 1 ? duration : duration * pos;
 		},
 
